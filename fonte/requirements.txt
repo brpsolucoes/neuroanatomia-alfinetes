@@ -1,0 +1,4 @@
+Pillow>=10
+# só para reextrair imagens dos PDFs:
+numpy>=1.26
+PyMuPDF>=1.24

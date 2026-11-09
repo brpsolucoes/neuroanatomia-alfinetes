@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menu de estudos</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d6b66'/%3E%3Crect x='7' y='7' width='8' height='8' rx='2' fill='%23fff'/%3E%3Crect x='17' y='7' width='8' height='8' rx='2' fill='%23fff' opacity='.7'/%3E%3Crect x='7' y='17' width='8' height='8' rx='2' fill='%23fff' opacity='.7'/%3E%3Crect x='17' y='17' width='8' height='8' rx='2' fill='%23fff'/%3E%3C/svg%3E">
+<meta name="description" content="Menu de estudos: Neuroanatomia (alfinetes da aula prática) e Desenvolvimento Humano (nascimento e primeira infância).">
+<style>
+/*__TOKENS__*/
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+.bar{display:flex;align-items:center;gap:12px;padding:14px 0}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.brand-mark svg{width:22px;height:22px}
+.brand b{font-family:var(--serif);font-size:1.12rem}
+.sp{flex:1}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+.iconbtn:hover{color:var(--ink);border-color:var(--muted)}
+.hero{padding:34px 0 22px}
+.hero h1{font-family:var(--serif);font-size:clamp(1.9rem,4.6vw,2.8rem);line-height:1.1;letter-spacing:.1px}
+.hero p{margin-top:10px;color:var(--muted);font-size:1.08rem;max-width:56ch}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:8px 0 26px}
+.app{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--surface);border-radius:20px;overflow:hidden;color:inherit;text-decoration:none;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s,border-color .18s}
+.app:hover{transform:translateY(-3px);border-color:var(--c);box-shadow:0 18px 44px rgba(20,25,40,.16)}
+.app:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.art{height:150px;background:linear-gradient(135deg,color-mix(in srgb,var(--c) 92%,#000),color-mix(in srgb,var(--c) 55%,#fff));display:grid;place-items:center;position:relative;overflow:hidden}
+.art svg{width:96px;height:96px;color:#fff;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;position:relative}
+.art::before,.art::after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.12)}
+.art::before{width:220px;height:220px;right:-60px;top:-90px}
+.art::after{width:140px;height:140px;left:-40px;bottom:-70px}
+.body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;flex:1}
+.eyebrow{font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--c)}
+.app h2{font-family:var(--serif);font-size:1.5rem;line-height:1.2;margin-top:-6px}
+.app p{color:var(--muted);font-size:.96rem}
+.facts{display:flex;flex-wrap:wrap;gap:6px;padding:0;list-style:none;margin:0}
+.facts li{font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--c) 12%,transparent);color:var(--ink);border:1px solid color-mix(in srgb,var(--c) 32%,transparent)}
+.progress{margin-top:auto;display:none}
+.progress.on{display:block}
+.progress .t{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:6px}
+.progress .bar2{height:8px;border-radius:6px;background:var(--line);overflow:hidden}
+.progress .bar2 i{display:block;height:100%;background:var(--ok);border-radius:6px}
+.go{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--c);margin-top:4px}
+.go svg{width:1.1em;height:1.1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.app:hover .go svg{transform:translateX(4px)}
+.note{color:var(--muted);font-size:.84rem;padding:6px 0 40px;max-width:70ch}
+@media (max-width:760px){
+  .cards{grid-template-columns:1fr}
+  .art{height:120px}
+  .art svg{width:76px;height:76px}
+  .hero{padding-top:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></div><b>Menu de estudos</b></div>
+    <span class="sp"></span>
+    <button class="iconbtn" id="themebtn" type="button" aria-label="Alternar tema claro/escuro" title="Alternar tema"></button>
+  </div>
+
+  <section class="hero">
+    <h1>O que você quer estudar hoje?</h1>
+    <p>Escolha uma matéria. Cada uma tem seu próprio app, com o seu progresso salvo neste navegador.</p>
+  </section>
+
+  <nav class="cards" aria-label="Matérias">
+    <a class="app" href="__LINK_NEURO__" style="--c:#6d4aff" id="neuro">
+      <div class="art" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 4.5a3 3 0 0 0-3 3 3 3 0 0 0-2.2 5 3.2 3.2 0 0 0 1.7 5.6A3 3 0 0 0 9 20a2 2 0 0 0 2-2V6.5a2 2 0 0 0-2-2z"/><path d="M15 4.5a3 3 0 0 1 3 3 3 3 0 0 1 2.2 5 3.2 3.2 0 0 1-1.7 5.6A3 3 0 0 1 15 20a2 2 0 0 1-2-2V6.5a2 2 0 0 1 2-2z"/></svg></div>
+      <div class="body">
+        <span class="eyebrow">Neuroanatomia</span>
+        <h2>Alfinetes da aula prática</h2>
+        <p>Mapas anatômicos com os 43 alfinetes dos roteiros: clique no alfinete e veja nome, função, imagem e onde fica.</p>
+        <ul class="facts"><li>43 alfinetes</li><li>12 mapas interativos</li><li>Estudar</li><li>Prova</li></ul>
+        <div class="progress" id="p-neuro"><div class="t"><span>Seu progresso</span><span id="p-neuro-t"></span></div><div class="bar2"><i id="p-neuro-b" style="width:0"></i></div></div>
+        <span class="go">Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+    </a>
+    <a class="app" href="__LINK_DEV__" style="--c:#c2410c" id="dev">
+      <div class="art" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21v-8"/><path d="M12 13c0-4 3-6.5 8-6.5 0 4.2-3 6.5-8 6.5z"/><path d="M12 16c0-3-2-5-6.5-5 0 3 2 5 6.5 5z"/></svg></div>
+      <div class="body">
+        <span class="eyebrow">Psicologia do desenvolvimento</span>
+        <h2>Desenvolvimento Humano</h2>
+        <p>Nascimento e primeira infância: físico, perceptual, cognitivo e linguagem, com linha do tempo por idade.</p>
+        <ul class="facts"><li>185 conceitos</li><li>5 temas</li><li>Linha do tempo</li><li>Glossário</li></ul>
+        <div class="progress" id="p-dev"><div class="t"><span>Seu progresso</span><span id="p-dev-t"></span></div><div class="bar2"><i id="p-dev-b" style="width:0"></i></div></div>
+        <span class="go">Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </div>
+    </a>
+  </nav>
+  <p class="note">Materiais: roteiros de aula prática e slides de Neuroanatomia; slides de Desenvolvimento Humano do Prof. Me. Carlos Eduardo Simonelli. Os apps funcionam sem internet e em qualquer aparelho.</p>
+</div>
+<script>
+(()=>{
+  const KEY='hub.theme';
+  const root=document.documentElement;
+  let theme='auto'; try{ theme=localStorage.getItem(KEY)||'auto'; }catch(e){}
+  const apply=()=>{ if(theme==='auto') delete root.dataset.theme; else root.dataset.theme=theme; };
+  const isDark=()=>root.dataset.theme==='dark'||(theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  const btn=document.getElementById('themebtn');
+  const ic=d=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>', MOON='<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+  const paint=()=>{ btn.innerHTML=ic(isDark()?SUN:MOON); };
+  btn.addEventListener('click',()=>{ theme=isDark()?'light':'dark'; try{ localStorage.setItem(KEY,theme); }catch(e){} apply(); paint(); });
+  apply(); paint();
+
+  // progresso salvo por cada app (mesmo navegador/origem); falha em silêncio se indisponível
+  const read=k=>{ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } };
+  const show=(id,done,total)=>{ if(!done) return; document.getElementById('p-'+id).classList.add('on'); document.getElementById('p-'+id+'-t').textContent=done+' de '+total+' dominados'; document.getElementById('p-'+id+'-b').style.width=Math.min(100,done/total*100)+'%'; };
+  const n=read('neuroAlfinetes.v1'); if(n&&n.status){ const total=n.roteiro===1?28:43; show('neuro',Object.entries(n.status).filter(([id,v])=>v==='dom'&&+id<=total).length,total); }
+  const d=read('desenvolvimentoHumano.v1'); if(d&&d.status){ show('dev',Object.values(d.status).filter(v=>v==='dom').length,185); }
+})();
+</script>
+</body>
+</html>

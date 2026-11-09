@@ -1,0 +1,706 @@
+{
+ "cerebro_3d": [
+  [
+   730,
+   456
+  ],
+  36350
+ ],
+ "encefalo_cabeca": [
+  [
+   319,
+   337
+  ],
+  17417
+ ],
+ "cerebro_hemisferios": [
+  [
+   676,
+   900
+  ],
+  54184
+ ],
+ "telencefalo_base": [
+  [
+   481,
+   620
+  ],
+  44433
+ ],
+ "telencefalo_cima": [
+  [
+   682,
+   900
+  ],
+  54015
+ ],
+ "telencefalo_nucleos": [
+  [
+   613,
+   415
+  ],
+  41250
+ ],
+ "diencefalo_foto": [
+  [
+   803,
+   516
+  ],
+  53646
+ ],
+ "diencefalo_subtalamo": [
+  [
+   900,
+   750
+  ],
+  81187
+ ],
+ "cerebelo_sup": [
+  [
+   776,
+   480
+  ],
+  46336
+ ],
+ "cerebelo_post": [
+  [
+   707,
+   521
+  ],
+  64645
+ ],
+ "cerebelo_inf": [
+  [
+   709,
+   843
+  ],
+  74404
+ ],
+ "cerebelo_divisao": [
+  [
+   720,
+   540
+  ],
+  28899
+ ],
+ "tronco_sagital": [
+  [
+   855,
+   900
+  ],
+  106175
+ ],
+ "tronco_reticular": [
+  [
+   656,
+   607
+  ],
+  49763
+ ],
+ "tronco_base": [
+  [
+   491,
+   360
+  ],
+  28862
+ ],
+ "mesencefalo_corte": [
+  [
+   900,
+   676
+  ],
+  87017
+ ],
+ "mesencefalo_ant": [
+  [
+   172,
+   227
+  ],
+  10328
+ ],
+ "mesencefalo_post": [
+  [
+   191,
+   240
+  ],
+  10924
+ ],
+ "mesencefalo_negra": [
+  [
+   348,
+   410
+  ],
+  27436
+ ],
+ "ponte_ant": [
+  [
+   449,
+   592
+  ],
+  37939
+ ],
+ "ponte_base": [
+  [
+   754,
+   900
+  ],
+  110669
+ ],
+ "ponte_post": [
+  [
+   189,
+   266
+  ],
+  10910
+ ],
+ "bulbo_ant": [
+  [
+   552,
+   529
+  ],
+  49418
+ ],
+ "bulbo_decussacao": [
+  [
+   148,
+   227
+  ],
+  6473
+ ],
+ "bulbo_post": [
+  [
+   425,
+   599
+  ],
+  31660
+ ],
+ "cinzenta_branca": [
+  [
+   530,
+   236
+  ],
+  25051
+ ],
+ "medula_corte": [
+  [
+   900,
+   583
+  ],
+  70144
+ ],
+ "medula_sagital": [
+  [
+   351,
+   900
+  ],
+  57015
+ ],
+ "medula_cabo": [
+  [
+   189,
+   495
+  ],
+  15235
+ ],
+ "medula_ressonancia": [
+  [
+   703,
+   402
+  ],
+  50908
+ ],
+ "plexo_lombossacral": [
+  [
+   538,
+   823
+  ],
+  61283
+ ],
+ "ventriculos_axial": [
+  [
+   864,
+   900
+  ],
+  110531
+ ],
+ "liquor": [
+  [
+   617,
+   737
+  ],
+  57355
+ ],
+ "frenico_pescoco": [
+  [
+   383,
+   375
+  ],
+  27753
+ ],
+ "frenico_torax": [
+  [
+   617,
+   677
+  ],
+  48610
+ ],
+ "frenico_esquema": [
+  [
+   446,
+   520
+  ],
+  37134
+ ],
+ "braco_ant": [
+  [
+   656,
+   900
+  ],
+  51375
+ ],
+ "plexo_braquial": [
+  [
+   729,
+   900
+  ],
+  77202
+ ],
+ "braco_cutaneo": [
+  [
+   777,
+   511
+  ],
+  45787
+ ],
+ "isquiatico_post": [
+  [
+   478,
+   900
+  ],
+  46579
+ ],
+ "isquiatico_coxa": [
+  [
+   589,
+   740
+  ],
+  30354
+ ],
+ "regiao_glutea": [
+  [
+   460,
+   597
+  ],
+  57916
+ ],
+ "nervos_perna_rotulados": [
+  [
+   900,
+   744
+  ],
+  77964
+ ],
+ "fibular": [
+  [
+   257,
+   748
+  ],
+  32519
+ ],
+ "femoral_musculos": [
+  [
+   310,
+   666
+  ],
+  36325
+ ],
+ "femoral_cutaneo": [
+  [
+   219,
+   900
+  ],
+  24370
+ ],
+ "femoral_plexo": [
+  [
+   398,
+   495
+  ],
+  46382
+ ],
+ "obturatorio_musculos": [
+  [
+   348,
+   900
+  ],
+  53966
+ ],
+ "obturatorio_pelve": [
+  [
+   292,
+   753
+  ],
+  36654
+ ],
+ "obturatorio_cutaneo": [
+  [
+   342,
+   731
+  ],
+  20934
+ ],
+ "meninges_camadas": [
+  [
+   900,
+   435
+  ],
+  42083
+ ],
+ "meninges_ingles": [
+  [
+   480,
+   320
+  ],
+  24503
+ ],
+ "meninges_espinal": [
+  [
+   562,
+   593
+  ],
+  34108
+ ],
+ "vago": [
+  [
+   812,
+   900
+  ],
+  96677
+ ],
+ "cranianos_base": [
+  [
+   491,
+   360
+  ],
+  28862
+ ],
+ "optico": [
+  [
+   900,
+   661
+  ],
+  94827
+ ],
+ "olfatorio": [
+  [
+   900,
+   432
+  ],
+  68352
+ ],
+ "epitalamo_pineal": [
+  [
+   728,
+   441
+  ],
+  59471
+ ],
+ "epitalamo_sagital": [
+  [
+   382,
+   262
+  ],
+  15904
+ ],
+ "talamo_vias": [
+  [
+   350,
+   356
+  ],
+  23429
+ ],
+ "talamo_esquema": [
+  [
+   280,
+   212
+  ],
+  12460
+ ],
+ "hipotalamo_azul": [
+  [
+   363,
+   326
+  ],
+  16584
+ ],
+ "hipotalamo_hipofise": [
+  [
+   900,
+   618
+  ],
+  84689
+ ],
+ "lobos_cores": [
+  [
+   613,
+   430
+  ],
+  35302
+ ],
+ "lobos_slide120": [
+  [
+   900,
+   477
+  ],
+  56591
+ ],
+ "giros_areas": [
+  [
+   900,
+   616
+  ],
+  75354
+ ],
+ "broca_wernicke": [
+  [
+   520,
+   353
+  ],
+  19927
+ ],
+ "linguagem_areas": [
+  [
+   429,
+   344
+  ],
+  31506
+ ],
+ "afasia_broca": [
+  [
+   364,
+   462
+  ],
+  30005
+ ],
+ "linguagem_cores": [
+  [
+   300,
+   274
+  ],
+  18585
+ ],
+ "diencefalo_cores": [
+  [
+   900,
+   509
+  ],
+  65380
+ ],
+ "ventriculos_coronal": [
+  [
+   900,
+   589
+  ],
+  55387
+ ],
+ "ventriculo4": [
+  [
+   864,
+   831
+  ],
+  86662
+ ],
+ "medula_vias": [
+  [
+   900,
+   604
+  ],
+  74085
+ ],
+ "vago_coracao": [
+  [
+   642,
+   900
+  ],
+  92276
+ ],
+ "oculomotores": [
+  [
+   900,
+   675
+  ],
+  80198
+ ],
+ "hipofise_pineal": [
+  [
+   900,
+   698
+  ],
+  73000
+ ],
+ "map_sagital": [
+  1000,
+  819,
+  129327
+ ],
+ "map_coronal": [
+  1000,
+  654,
+  75017
+ ],
+ "map_lobos": [
+  1000,
+  701,
+  61994
+ ],
+ "map_ventral": [
+  946,
+  1125,
+  143648
+ ],
+ "map_medula": [
+  382,
+  1000,
+  44857
+ ],
+ "map_meninges": [
+  1366,
+  660,
+  72831
+ ],
+ "map_torax": [
+  911,
+  1000,
+  97058
+ ],
+ "map_braco": [
+  791,
+  1085,
+  69749
+ ],
+ "map_coxa": [
+  465,
+  1000,
+  74344
+ ],
+ "map_obturatorio": [
+  388,
+  1000,
+  59953
+ ],
+ "map_perna_post": [
+  796,
+  1000,
+  44823
+ ],
+ "map_perna_ant": [
+  344,
+  1000,
+  52785
+ ],
+ "a_sag_cerebro": [
+  900,
+  737,
+  12042
+ ],
+ "a_sag_diencefalo": [
+  900,
+  737,
+  5115
+ ],
+ "a_sag_talamo": [
+  900,
+  737,
+  4192
+ ],
+ "a_sag_hipotalamo": [
+  900,
+  737,
+  3584
+ ],
+ "a_sag_epitalamo": [
+  900,
+  737,
+  2866
+ ],
+ "a_sag_mesencefalo": [
+  900,
+  737,
+  3698
+ ],
+ "a_sag_ponte": [
+  900,
+  737,
+  4190
+ ],
+ "a_sag_bulbo": [
+  900,
+  737,
+  3521
+ ],
+ "a_sag_tronco": [
+  900,
+  737,
+  5755
+ ],
+ "a_sag_cerebelo": [
+  900,
+  737,
+  6703
+ ],
+ "a_sag_v4": [
+  900,
+  737,
+  3680
+ ],
+ "a_sag_telencefalo": [
+  900,
+  737,
+  13725
+ ],
+ "a_cor_vld": [
+  900,
+  589,
+  5920
+ ],
+ "a_cor_vle": [
+  900,
+  589,
+  6062
+ ],
+ "a_cor_v3": [
+  900,
+  589,
+  3782
+ ],
+ "a_lob_frontal": [
+  900,
+  631,
+  10879
+ ],
+ "a_lob_parietal": [
+  900,
+  631,
+  10646
+ ],
+ "a_lob_occipital": [
+  900,
+  631,
+  8329
+ ],
+ "a_lob_prefrontal": [
+  900,
+  631,
+  5783
+ ],
+ "a_lob_broca": [
+  900,
+  631,
+  4213
+ ],
+ "a_lob_wernicke": [
+  900,
+  631,
+  4122
+ ]
+}

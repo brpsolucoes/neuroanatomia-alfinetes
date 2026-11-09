@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Desenvolvimento Humano · Estudo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d6b66'/%3E%3Cpath d='M16 26v-9' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M16 17c0-5 3-8 9-8 0 5-3 8-9 8zM16 20c0-4-2-6-8-6 0 4 2 6 8 6z' fill='%23fff'/%3E%3C/svg%3E">
+<meta name="description" content="Estudo interativo de Psicologia do Desenvolvimento: linha do tempo por idade, cartões de estudo, prova e glossário.">
+<style>
+/*__CSS__*/
+/* ---------- específicos do app Desenvolvimento Humano ---------- */
+.tema-sel{max-width:240px;min-width:0;font-size:.88rem;padding:6px 10px;min-height:38px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.legend button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:.82rem;font-weight:600;color:var(--muted);display:flex;gap:7px;align-items:center}
+.legend button i{width:10px;height:10px;border-radius:50%;background:var(--g,#888)}
+.legend button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.dh{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,1fr);gap:20px;align-items:start}
+.dh-left{min-width:0}
+.dh-panel{position:sticky;top:76px;max-height:calc(100dvh - 92px);overflow:auto;min-width:0}
+.tl{position:relative}
+.band{display:grid;grid-template-columns:132px 24px minmax(0,1fr);gap:0 8px}
+.band-label{text-align:right;padding:13px 0 0}
+.band-label b{display:block;font-family:var(--serif);font-size:1rem;line-height:1.2}
+.band-label small{color:var(--muted);font-size:.78rem}
+.band-spine{position:relative}
+.band-spine::before{content:"";position:absolute;left:11px;top:0;bottom:0;width:2px;background:var(--line)}
+.band-spine::after{content:"";position:absolute;left:5px;top:16px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
+.band:first-child .band-spine::before{top:22px}
+.band:last-child .band-spine::before{bottom:calc(100% - 24px)}
+.band-items{padding:9px 0 15px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+.cp{display:inline-flex;align-items:center;gap:8px;max-width:100%;border:1px solid color-mix(in srgb,var(--g) 40%,var(--line));background:color-mix(in srgb,var(--g) 8%,var(--surface));border-radius:99px;padding:3px 13px 3px 3px;font-size:.86rem;font-weight:600;text-align:left;min-height:38px;line-height:1.2;color:var(--ink)}
+.cp:hover{border-color:var(--g);background:color-mix(in srgb,var(--g) 15%,var(--surface))}
+.cp .n{min-width:30px;height:30px;border-radius:99px;background:var(--g);color:#fff;font-weight:800;font-size:.76rem;display:grid;place-items:center;padding:0 7px;flex:none;position:relative}
+.cp .t{min-width:0}
+.cp.sel{border-color:var(--g);background:color-mix(in srgb,var(--g) 20%,var(--surface));box-shadow:0 0 0 3px color-mix(in srgb,var(--g) 35%,transparent)}
+.cp[data-st="dom"] .n::after,.cp[data-st="rev"] .n::after{position:absolute;right:-5px;top:-5px;width:14px;height:14px;border-radius:50%;border:2px solid var(--surface);font:700 9px/10px var(--sans);color:#fff;text-align:center}
+.cp[data-st="dom"] .n::after{content:"✓";background:var(--ok)}
+.cp[data-st="rev"] .n::after{content:"!";background:var(--warn)}
+.noage{margin-top:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:0}
+.noage summary{cursor:pointer;padding:13px 16px;font-weight:700;list-style:none;display:flex;align-items:center;gap:8px}
+.noage summary::-webkit-details-marker{display:none}
+.noage summary::before{content:"▸";transition:transform .15s;color:var(--muted)}
+.noage[open] summary::before{transform:rotate(90deg)}
+.noage .body{padding:0 16px 16px;display:flex;flex-wrap:wrap;gap:8px}
+.noage h4{width:100%;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:8px 0 0}
+.defn p{margin:0 0 10px;line-height:1.55}
+.defn p:first-child{font-size:1.04rem;font-weight:500}
+.when{display:flex;gap:12px;align-items:flex-start;border:1px solid color-mix(in srgb,var(--gx) 40%,var(--line));background:color-mix(in srgb,var(--gx) 9%,var(--surface));border-radius:12px;padding:12px 14px}
+.when svg{width:1.4em;height:1.4em;color:var(--gx);margin-top:2px}
+.when b{display:block;font-weight:700;line-height:1.4}
+.when small{display:block;color:var(--muted);margin-top:3px;font-size:.82rem}
+.gal-main img.slide{max-height:min(48vh,440px);width:100%;object-fit:contain;background:#fff}
+.qcard{max-width:780px;margin:0 auto;padding:20px;display:grid;gap:14px}
+.qprompt{font-size:.8rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:800}
+.qmain{font-family:var(--serif);font-size:1.3rem;line-height:1.35}
+.qmain.long{font-size:1.12rem}
+.opt{align-items:flex-start}
+.opt .k{margin-top:1px}
+.opt span.tx{line-height:1.4;font-weight:600}
+.mode b{display:block}
+@media (max-width:1020px){
+  .dh{grid-template-columns:1fr}
+  .dh-panel{display:none}
+}
+@media (max-width:760px){
+  .band{grid-template-columns:78px 20px minmax(0,1fr)}
+  .band-label b{font-size:.86rem}
+  .band-label small{font-size:.7rem}
+  .band-spine::before{left:9px} .band-spine::after{left:3px}
+  .tema-sel{max-width:none;flex:1}
+  .tools{flex:1;justify-content:flex-end}
+  .cp{font-size:.82rem}
+  .legend{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;margin-right:-12px;scrollbar-width:thin}
+  .legend button{flex:none;white-space:nowrap}
+  .panel{scroll-margin-top:132px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" id="homebrand" href="#" title="Voltar ao menu de estudos">
+      <div class="brand-mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 21v-8"/><path d="M12 13c0-4 3-6.5 8-6.5 0 4.2-3 6.5-8 6.5z"/><path d="M12 16c0-3-2-5-6.5-5 0 3 2 5 6.5 5z"/></svg></div>
+      <div><b>Desenvolvimento Humano</b><small>Nascimento e primeira infância</small></div>
+    </a>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Seções"></nav>
+    <div class="tools">
+      <select class="tema-sel" id="temasel" aria-label="Filtrar por tema"></select>
+      <div class="prog" id="prog"></div>
+      <button class="iconbtn" id="themebtn" aria-label="Alternar tema claro/escuro" title="Alternar tema"></button>
+    </div>
+  </div>
+</header>
+<main id="view"></main>
+<div class="foot">Material: slides do Prof. Me. Carlos Eduardo Simonelli. <button id="aboutbtn" type="button">Sobre este material</button> · <a id="homelink" href="#" style="color:var(--accent)">← Menu de estudos</a></div>
+<noscript><p style="padding:24px">Este app precisa de JavaScript ativado.</p></noscript>
+
+<script id="dados" type="application/json">__DATA__</script>
+<script id="imgs" type="application/json">__IMAGES__</script>
+<script>
+(()=>{
+"use strict";
+const DATA = JSON.parse(document.getElementById('dados').textContent);
+const IMG = JSON.parse(document.getElementById('imgs').textContent);
+const TEMAS = DATA.temas, BANDS = DATA.bands, ALL = DATA.conc;
+const BYID = Object.fromEntries(ALL.map(c=>[c.id,c]));
+const BANDNAME = Object.fromEntries(BANDS.map(b=>[b[0],b[1]]));
+document.getElementById('homelink').setAttribute('href', DATA.home || '#');
+{ const hb=document.getElementById('homebrand'); if(hb) hb.setAttribute('href',DATA.home||'#'); }
+
+/* ---------- utilidades ---------- */
+function h(tag, props, ...kids){
+  const el = document.createElement(tag);
+  if(props) for(const [k,v] of Object.entries(props)){
+    if(v==null||v===false) continue;
+    if(k==='class') el.className=v;
+    else if(k==='style') el.setAttribute('style',v);
+    else if(k==='html') el.innerHTML=v;
+    else if(k.startsWith('on')) el.addEventListener(k.slice(2).toLowerCase(),v);
+    else if(['value','checked','disabled','hidden','src','alt','id','type','placeholder','title','selected'].includes(k)) el[k]=v;
+    else el.setAttribute(k,v===true?'':v);
+  }
+  for(const kid of kids.flat(Infinity)){ if(kid==null||kid===false) continue; el.append(kid.nodeType?kid:document.createTextNode(kid)); }
+  return el;
+}
+const ICONS = {
+  line:'<circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M10 6h10M10 12h7M10 18h10"/>',
+  cards:'<rect x="3" y="7" width="14" height="13" rx="2"/><path d="M7 4h12a2 2 0 0 1 2 2v11"/>',
+  quiz:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  check:'<path d="m5 12.5 4.5 4.5L19 7.5"/>', x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  right:'<path d="M5 12h14M13 6l6 6-6 6"/>', left:'<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  expand:'<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  redo:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/>'
+};
+function icon(n){ const s=document.createElementNS('http://www.w3.org/2000/svg','svg'); s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('class','i'); s.setAttribute('aria-hidden','true'); s.innerHTML=ICONS[n]||''; return s; }
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const joinPt=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' e '+a[a.length-1];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const tcolor=c=>TEMAS[c.tema].cor;
+
+/* ---------- estado e persistência ---------- */
+const KEY='desenvolvimentoHumano.v1';
+const st={tab:'linha',tema:'todos',sel:null,recall:false,status:{},theme:'auto'};
+function load(){ try{ const d=JSON.parse(localStorage.getItem(KEY)||'{}'); if(d.tema&&(d.tema==='todos'||TEMAS[d.tema])) st.tema=d.tema; if(d.status) st.status=d.status; if(d.theme) st.theme=d.theme; if(typeof d.recall==='boolean') st.recall=d.recall; }catch(e){} }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify({tema:st.tema,status:st.status,theme:st.theme,recall:st.recall})); }catch(e){} }
+const isVis=c=>st.tema==='todos'||c.tema===st.tema;
+const visible=()=>ALL.filter(isVis);
+function setStatus(id,v){ if(v) st.status[id]=v; else delete st.status[id]; save(); renderHeader(); }
+
+/* ---------- galeria + lightbox + modal ---------- */
+function lightbox(items,i0=0){
+  let i=i0; const img=h('img',{alt:''}); const cap=h('span',{});
+  const upd=()=>{ img.src=IMG[items[i][0]]; img.alt=items[i][1]; cap.textContent=`${items[i][1]}  (${i+1}/${items.length})`; };
+  const close=()=>{ ov.remove(); document.removeEventListener('keydown',key); };
+  const go=d=>{ i=(i+d+items.length)%items.length; upd(); };
+  const key=e=>{ if(e.key==='Escape'){e.stopPropagation();close();} else if(e.key==='ArrowRight') go(1); else if(e.key==='ArrowLeft') go(-1); };
+  const ov=h('div',{class:'overlay lb',role:'dialog','aria-modal':'true','aria-label':'Slide ampliado',onclick:e=>{ if(e.target===ov||e.target.classList.contains('lb-imgwrap')) close(); }},
+    h('div',{class:'lb-in'},h('div',{class:'lb-imgwrap'},img),
+      h('div',{class:'lb-bar'},cap,h('span',{class:'sp'}),
+        items.length>1&&h('button',{class:'btn sm',type:'button',onclick:()=>go(-1),'aria-label':'Slide anterior'},icon('left')),
+        items.length>1&&h('button',{class:'btn sm',type:'button',onclick:()=>go(1),'aria-label':'Próximo slide'},icon('right')),
+        h('button',{class:'btn sm',type:'button',onclick:close,'aria-label':'Fechar'},icon('x'),'Fechar'))));
+  document.body.append(ov); document.addEventListener('keydown',key); upd();
+  ov.querySelector('.btn:last-child').focus();
+}
+function gallery(c){
+  const items=c.slides; let cur=0;
+  const main=h('button',{type:'button',class:'gal-main','aria-label':'Ampliar slide',onclick:()=>lightbox(items,cur)});
+  const im=h('img',{class:'slide',alt:''}); const cap=h('p',{class:'gal-cap'});
+  main.append(im,h('span',{class:'zoom'},icon('expand'),'ampliar'));
+  const thumbs=h('div',{class:'thumbs'});
+  const setCur=i=>{ cur=i; im.src=IMG[items[i][0]]; im.alt=items[i][1]; cap.textContent=items[i][1]; [...thumbs.children].forEach((b,j)=>b.setAttribute('aria-pressed',String(j===i))); };
+  items.forEach((it,i)=>thumbs.append(h('button',{type:'button','aria-label':'Slide '+(i+1)+': '+it[1],onclick:()=>setCur(i)},h('img',{src:IMG[it[0]],alt:''}))));
+  const w=h('div',{class:'gal'},main,cap,items.length>1&&thumbs); setCur(0); return w;
+}
+function modal(content,{label='Detalhes'}={}){
+  const close=()=>{ ov.remove(); document.removeEventListener('keydown',key); };
+  const key=e=>{ if(e.key==='Escape'&&!document.querySelector('.lb')) close(); };
+  const ov=h('div',{class:'overlay',role:'dialog','aria-modal':'true','aria-label':label,onclick:e=>{ if(e.target===ov) close(); }},
+    h('div',{class:'modal'},h('button',{type:'button',class:'iconbtn x','aria-label':'Fechar',onclick:close},icon('x')),content));
+  document.body.append(ov); document.addEventListener('keydown',key); ov.querySelector('.x').focus(); return close;
+}
+
+/* ---------- detalhe: Termo → Definição → Detalhes → Quando → Slide ---------- */
+function stepDefs(c){
+  const d=[{k:'def',t:'Definição',build:()=>h('div',{class:'defn'},c.defs.map(t=>h('p',{},t)))}];
+  if(c.det.length) d.push({k:'det',t:'Detalhes',build:()=>h('ul',{class:'fn'},c.det.map(f=>h('li',{},f)))});
+  if(c.quando) d.push({k:'quando',t:'Quando',build:()=>h('div',{class:'when'},icon('clock'),h('div',{},h('b',{},c.quando),c.faixa&&h('small',{},'Faixa na linha do tempo: '+BANDNAME[c.faixa])))});
+  if(c.slides.length) d.push({k:'slide',t:'Slide',build:()=>gallery(c)});
+  return d;
+}
+function renderDetail(c,{recall=false,onChange}={}){
+  const col=tcolor(c), t=TEMAS[c.tema];
+  const root=h('article',{class:'detail',style:`--g:${col}`});
+  root.append(h('header',{class:'dhead'},h('span',{class:'badge','aria-label':'Conceito '+c.id,style:c.id>99?'font-size:1rem':''},String(c.id)),
+    h('div',{},h('h2',{class:'dname'},c.nome),h('div',{class:'dmeta'},h('span',{class:'tag',style:`--g:${col}`},h('i'),t.nome),h('span',{class:'tag plain'},c.sub)))));
+  const defs=stepDefs(c); const total=defs.length;
+  const steps=h('div',{class:'steps'});
+  steps.append(h('section',{class:'step on'},h('span',{class:'num'},'1'),h('h3',{},'Termo'),
+    h('div',{class:'step-body'},h('p',{class:'hint'},recall?'Tente lembrar '+joinPt(['a definição',...(c.det.length?['os detalhes']:[]),...(c.quando?['a idade ou fase']:[]),...(c.slides.length?['o que o slide mostra']:[])])+' antes de revelar.':'Conceito '+c.id+' de '+ALL.length+'.'))));
+  let revealed=recall?0:total; const secs=[];
+  const reveal=(i,focus)=>{ const d=defs[i], s=secs[i]; s.el.classList.add('on'); s.body.replaceChildren(d.build()); if(focus) s.el.scrollIntoView({behavior:'smooth',block:'nearest'}); };
+  defs.forEach((d,i)=>{
+    const body=h('div',{class:'step-body'}); const el=h('section',{class:'step',id:'st-'+d.k},h('span',{class:'num'},String(i+2)),h('h3',{},d.t),body);
+    const sec={el,body}; secs.push(sec); steps.append(el);
+    if(recall){ const b=h('button',{type:'button',class:'locked',disabled:i!==0,onclick:()=>revealNext()},h('span',{class:'bars'},h('i'),h('i'),h('i')),h('b',{},'Revelar')); body.append(b); sec.btn=b; }
+    else reveal(i,false);
+  });
+  function revealNext(){
+    if(revealed>=total) return false; reveal(revealed,true); revealed++; if(secs[revealed]) secs[revealed].btn.disabled=false;
+    if(revealed>=total&&root._extra) root._extra.hidden=false;
+    onChange&&onChange(revealed); return true;
+  }
+  root.append(steps);
+  if(c.extra&&c.extra.length){ const ex=h('div',{class:'extra'},c.extra.map(([a,b])=>h('div',{},h('b',{},a),b))); if(recall) ex.hidden=true; root.append(ex); root._extra=ex; }
+  root.append(h('p',{class:'src'},'Fonte: '+c.fonte));
+  return {el:root,revealNext,get step(){return revealed},total,labels:['Termo',...defs.map(d=>d.t)],done:()=>revealed>=total,revealAll(){ while(revealNext()); },showExtra(){ if(root._extra) root._extra.hidden=false; }};
+}
+function statusButtons(c,after){
+  const cur=st.status[c.id];
+  return h('div',{class:'dfoot'},
+    h('button',{type:'button',class:'btn sm'+(cur==='dom'?' ok':''),onclick:()=>{ setStatus(c.id,cur==='dom'?null:'dom'); after&&after(); }},icon('check'),cur==='dom'?'Dominado':'Marcar como dominado'),
+    h('button',{type:'button',class:'btn sm'+(cur==='rev'?' warn':''),onclick:()=>{ setStatus(c.id,cur==='rev'?null:'rev'); after&&after(); }},icon('flag'),cur==='rev'?'Para revisar':'Marcar para revisar'));
+}
+function openDetailModal(id,o={}){
+  const c=BYID[id]; const d=renderDetail(c,{recall:!!o.recall}); const wrap=h('div',{},d.el);
+  const refresh=()=>{ wrap.querySelectorAll('.dfoot').forEach(e=>e.remove()); d.el.append(statusButtons(c,refresh)); }; refresh();
+  modal(wrap,{label:c.nome});
+}
+function aboutModal(){
+  modal(h('div',{class:'about'},h('h2',{},'Sobre este material'),
+    h('p',{},'Este app foi montado a partir de cinco arquivos de slides da pasta: Nascimento e Primeira Infância, Desenvolvimento físico, perceptual, cognitivo e da linguagem (Prof. Me. Carlos Eduardo Simonelli).'),
+    h('ul',{},
+      h('li',{},'Os PDFs eram imagens sem texto: o texto foi lido por OCR e conferido com os slides. Se achar algum erro de leitura, confira com o slide original (cada conceito mostra o slide de origem).'),
+      h('li',{},'Os conceitos seguem o que está nos slides. Onde acrescentei um complemento (por exemplo, o nome “reflexo de Moro” ou as definições de reforço/punição positivos e negativos), isso está sinalizado no cartão.'),
+      h('li',{},'Na linha do tempo, cada marco aparece na faixa etária em que começa; reflexos aparecem em “Recém-nascido” com o prazo (“até 4 meses”).'),
+      h('li',{},'Seu progresso (dominado/revisar) fica salvo só neste navegador.')),
+    h('div',{class:'row'},h('button',{class:'btn sm',type:'button',onclick:()=>{ if(confirm('Apagar todo o progresso salvo?')){ st.status={}; save(); renderAll(); document.querySelector('.overlay .x').click(); } }},'Apagar progresso'))),{label:'Sobre'});
+}
+
+/* ---------- cabeçalho ---------- */
+function renderHeader(){
+  const tabs=[['linha','Linha do tempo','line'],['estudar','Estudar','cards'],['prova','Prova','quiz'],['lista','Glossário','list']];
+  document.getElementById('tabs').replaceChildren(...tabs.map(([k,l,ic])=>h('button',{type:'button',class:'tab',role:'tab','aria-selected':String(st.tab===k),onclick:()=>{ st.tab=k; renderAll(); window.scrollTo({top:0}); }},icon(ic),l)));
+  const sel=document.getElementById('temasel');
+  sel.replaceChildren(h('option',{value:'todos',selected:st.tema==='todos'},`Todos os temas (${ALL.length})`),...Object.entries(TEMAS).map(([k,t])=>h('option',{value:k,selected:st.tema===k},`${t.nome} (${ALL.filter(c=>c.tema===k).length})`)));
+  sel.onchange=e=>{ st.tema=e.target.value; save(); if(st.sel&&!isVis(BYID[st.sel])) st.sel=null; deck.built=false; qz.q=null; renderAll(); };
+  const v=visible(); const dom=v.filter(c=>st.status[c.id]==='dom').length; const C=2*Math.PI*15, off=C*(1-dom/v.length);
+  document.getElementById('prog').innerHTML=`<svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="bg" cx="18" cy="18" r="15"/><circle class="fg" cx="18" cy="18" r="15" stroke-dasharray="${C}" stroke-dashoffset="${off}"/></svg><span><b>${dom}/${v.length}</b>dominados</span>`;
+  const dark=document.documentElement.dataset.theme==='dark'||(st.theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  document.getElementById('themebtn').replaceChildren(icon(dark?'sun':'moon'));
+}
+function applyTheme(){ if(st.theme==='auto') delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme=st.theme; }
+
+/* ---------- aba LINHA DO TEMPO ---------- */
+function chip(c,onclick){
+  return h('button',{type:'button',class:'cp'+(st.sel===c.id?' sel':''),style:`--g:${tcolor(c)}`,'data-id':c.id,'data-st':st.status[c.id]||'',onclick,title:c.nome},
+    h('span',{class:'n'},String(c.id)),h('span',{class:'t'},c.curto||c.nome));
+}
+function renderLinha(){
+  const view=document.getElementById('view'); const vis=visible();
+  const withAge=vis.filter(c=>c.faixa), noAge=vis.filter(c=>!c.faixa);
+  const legend=h('div',{class:'legend',role:'group','aria-label':'Temas'},
+    h('button',{type:'button','aria-pressed':String(st.tema==='todos'),onclick:()=>{ st.tema='todos'; save(); deck.built=false; renderAll(); }},'Todos'),
+    Object.entries(TEMAS).map(([k,t])=>h('button',{type:'button',style:`--g:${t.cor}`,'aria-pressed':String(st.tema===k),onclick:()=>{ st.tema=st.tema===k?'todos':k; save(); deck.built=false; renderAll(); }},h('i'),t.nome)));
+  const panel=h('aside',{class:'panel card dh-panel',id:'panel','aria-live':'polite'});
+  const chips=new Map();
+  const select=id=>{ st.sel=id; if(innerWidth<=1020){ chips.forEach((el,k)=>el.classList.toggle('sel',k===id)); openDetailModal(id,{recall:st.recall}); } else showPanel(true); };
+  const tl=h('div',{class:'tl'});
+  for(const [bk,bl] of BANDS){
+    const items=withAge.filter(c=>c.faixa===bk); if(!items.length) continue;
+    const [main,sub]=bl.split(' · ');
+    tl.append(h('div',{class:'band'},h('div',{class:'band-label'},h('b',{},main),sub&&h('small',{},sub)),h('div',{class:'band-spine'}),
+      h('div',{class:'band-items'},items.map(c=>{ const el=chip(c,()=>select(c.id)); chips.set(c.id,el); return el; }))));
+  }
+  const noageBox=noAge.length?h('details',{class:'noage'},h('summary',{},`Conceitos sem idade definida (${noAge.length})`),
+    h('div',{class:'body'},[...new Set(noAge.map(c=>c.tema+'|'+c.sub))].map(k=>{ const [tm,sb]=k.split('|'); return [h('h4',{},`${TEMAS[tm].nome} · ${sb}`),noAge.filter(c=>c.tema===tm&&c.sub===sb).map(c=>{ const el=chip(c,()=>select(c.id)); chips.set(c.id,el); return el; })]; }))):null;
+  view.replaceChildren(h('div',{class:'dh'},h('div',{class:'dh-left'},legend,
+    h('p',{class:'hint',style:'margin:0 0 10px'},`Cada marco está na faixa etária em que começa. ${withAge.length} marcos com idade${noAge.length?` e ${noAge.length} conceitos sem idade (no fim da página)`:''}. Toque num marco para ver Termo → Definição → Detalhes → Quando → Slide.`),
+    tl,noageBox),panel));
+  function showPanel(scroll){
+    const c=st.sel&&isVis(BYID[st.sel])?BYID[st.sel]:null;
+    chips.forEach((el,id)=>el.classList.toggle('sel',c&&id===c.id));
+    if(!c){
+      panel.replaceChildren(h('div',{class:'panel-empty'},h('h3',{},'Escolha um marco'),
+        h('p',{class:'muted'},'Clique em um marco da linha do tempo para ver, em ordem: Termo → Definição → Detalhes → Quando → Slide de origem.'),
+        h('label',{class:'chk',style:'margin-top:12px'},h('input',{type:'checkbox',checked:st.recall,onchange:e=>{ st.recall=e.target.checked; save(); }}),'Modo recordação: esconder as respostas até eu revelar')));
+      return;
+    }
+    const d=renderDetail(c,{recall:st.recall});
+    const order=[...withAge,...noAge].map(x=>x.id); const i=order.indexOf(c.id);
+    d.el.prepend(h('div',{class:'dnav'},h('button',{type:'button',class:'btn sm ghost',onclick:()=>{ st.sel=null; showPanel(false); }},icon('left'),'Todos os marcos'),h('span',{class:'sp'}),
+      h('button',{type:'button',class:'btn sm',disabled:i<=0,'aria-label':'Anterior',onclick:()=>select(order[i-1])},icon('left')),
+      h('button',{type:'button',class:'btn sm',disabled:i<0||i>=order.length-1,'aria-label':'Próximo',onclick:()=>select(order[i+1])},icon('right'))));
+    const refresh=()=>{ d.el.querySelectorAll('.dfoot').forEach(e=>e.remove()); d.el.append(statusButtons(c,()=>{ refresh(); chips.get(c.id)?.setAttribute('data-st',st.status[c.id]||''); })); }; refresh();
+    panel.replaceChildren(d.el); panel.scrollTop=0;
+    if(scroll&&innerWidth<=1020) panel.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  showPanel(false);
+  if(st.sel&&innerWidth>1020) showPanel(false);
+}
+
+/* ---------- aba ESTUDAR ---------- */
+const deck={list:[],i:0,order:'num',filter:'todos',built:false};
+function buildDeck(){
+  let l=visible();
+  if(deck.filter==='nao') l=l.filter(c=>st.status[c.id]!=='dom');
+  if(deck.filter==='rev') l=l.filter(c=>st.status[c.id]==='rev');
+  deck.list=deck.order==='rand'?shuffle(l):l.slice().sort((a,b)=>a.id-b.id); deck.i=0; deck.built=true;
+}
+let studyKey=null;
+function renderEstudar(){
+  const view=document.getElementById('view'); if(!deck.built) buildDeck();
+  const wrap=h('div',{class:'study'});
+  const sel=(opts,val,fn,label)=>h('select',{'aria-label':label,onchange:e=>fn(e.target.value)},opts.map(([v,t])=>h('option',{value:v,selected:v===val},t)));
+  wrap.append(h('div',{class:'study-bar'},
+    sel([['todos','Todos os conceitos'],['nao','Ainda não dominados'],['rev','Marcados para revisar']],deck.filter,v=>{ deck.filter=v; buildDeck(); renderEstudar(); },'Filtro do baralho'),
+    sel([['num','Em ordem do material'],['rand','Embaralhado']],deck.order,v=>{ deck.order=v; buildDeck(); renderEstudar(); },'Ordem'),
+    h('div',{class:'grow'},h('div',{class:'hint'},deck.list.length?`Cartão ${deck.i+1} de ${deck.list.length}`:'Baralho vazio'),h('div',{class:'progbar'},h('i',{style:`width:${deck.list.length?((deck.i+1)/deck.list.length*100):0}%`})))));
+  if(!deck.list.length){
+    wrap.append(h('div',{class:'card empty'},h('h3',{},deck.filter==='rev'?'Nada marcado para revisar':'Você dominou tudo!'),h('p',{class:'muted'},deck.filter==='rev'?'Marque conceitos como “para revisar” durante o estudo ou a prova.':'Todos os conceitos deste tema estão marcados como dominados. Volte ao filtro “Todos” para rever.'),
+      h('div',{class:'row',style:'justify-content:center;margin-top:14px'},h('button',{class:'btn primary',type:'button',onclick:()=>{ deck.filter='todos'; buildDeck(); renderEstudar(); }},'Ver todos os conceitos'))));
+    view.replaceChildren(wrap); studyKey=null; return;
+  }
+  const c=deck.list[deck.i];
+  const card=h('div',{class:'card'}); const actions=h('div',{class:'study-actions'});
+  const d=renderDetail(c,{recall:true,onChange:upd}); card.append(d.el);
+  const flow=h('div',{class:'flow','aria-hidden':'true'},d.labels.map((t,k)=>h('span',{class:k===0?'on':''},h('em',{},String(k+1)),t)));
+  function upd(){ [...flow.children].forEach((sp,k)=>{ sp.className=k<=d.step?(k===d.step?'on':'done'):''; }); buildActions(); }
+  function go(n){ const j=clamp(deck.i+n,0,deck.list.length-1); if(j===deck.i) return; deck.i=j; renderEstudar(); window.scrollTo({top:0,behavior:'smooth'}); }
+  function mark(v){
+    setStatus(c.id,v);
+    if(deck.filter!=='todos'&&v==='dom'){ deck.list.splice(deck.i,1); if(deck.i>=deck.list.length) deck.i=Math.max(0,deck.list.length-1); renderEstudar(); }
+    else if(deck.i<deck.list.length-1) go(1); else renderEstudar();
+  }
+  function buildActions(){
+    actions.replaceChildren();
+    if(!d.done()){
+      const next=d.labels[d.step+1].toLowerCase();
+      actions.append(h('button',{type:'button',class:'btn ghost',disabled:deck.i===0,onclick:()=>go(-1)},icon('left'),'Anterior'),
+        h('button',{type:'button',class:'btn primary',onclick:()=>d.revealNext()},icon('eye'),'Revelar '+next,h('span',{class:'kbd'},'Espaço')),
+        h('button',{type:'button',class:'btn ghost',onclick:()=>{ d.revealAll(); }},'Mostrar tudo'));
+    } else {
+      actions.append(h('button',{type:'button',class:'btn ghost',disabled:deck.i===0,onclick:()=>go(-1)},icon('left'),'Anterior'),
+        h('button',{type:'button',class:'btn warn',onclick:()=>mark('rev')},icon('flag'),'Rever depois',h('span',{class:'kbd'},'R')),
+        h('button',{type:'button',class:'btn ok',onclick:()=>mark('dom')},icon('check'),'Dominei',h('span',{class:'kbd'},'D')),
+        h('button',{type:'button',class:'btn ghost',disabled:deck.i>=deck.list.length-1,onclick:()=>go(1)},'Pular',icon('right')));
+    }
+  }
+  upd();
+  wrap.append(flow,card,actions,h('p',{class:'hint',style:'margin-top:6px;text-align:center'},'Atalhos: Espaço revela o próximo passo · ← → trocam de cartão · D dominei · R rever'));
+  view.replaceChildren(wrap);
+  studyKey=e=>{
+    if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)||document.querySelector('.overlay')) return;
+    if(e.key===' '||e.key==='Enter'){ if(e.target.tagName==='BUTTON'||e.target.tagName==='A') return; e.preventDefault(); d.revealNext(); }
+    else if(e.key==='ArrowRight') go(1); else if(e.key==='ArrowLeft') go(-1);
+    else if((e.key==='d'||e.key==='D')&&d.done()) mark('dom'); else if((e.key==='r'||e.key==='R')&&d.done()) mark('rev');
+  };
+}
+document.addEventListener('keydown',e=>{ if(st.tab==='estudar'&&studyKey) studyKey(e); });
+
+/* ---------- aba PROVA ---------- */
+const qz={type:'def',n:10,q:null};
+const nrm=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const leaks=c=>{ const d=nrm(c.defs[0]), n=nrm(c.nome), ws=n.split(' ').filter(w=>w.length>3); return d.includes(n)||(ws.length>0&&ws.every(w=>d.includes(w))); };
+const MODES=[['def','Qual é o conceito?','Leia a definição e escolha o termo correspondente.','quiz'],
+             ['termo','Qual é a definição?','Aparece o termo. Escolha a definição correta.','cards'],
+             ['quando','Quando acontece?','Aparece o marco. Escolha a idade ou fase correta (só conceitos com idade).','clock']];
+function optionsFor(c,valFn,pool,k=3){
+  const target=valFn(c); const seen=new Set([target]); const cand=pool.filter(x=>x.id!==c.id&&valFn(x));
+  const rank=x=>(x.sub===c.sub?0:x.tema===c.tema?1:2)*1000+Math.abs(valFn(x).length-target.length)+Math.random()*30;
+  const out=[]; for(const x of cand.sort((a,b)=>rank(a)-rank(b))){ const v=valFn(x); if(seen.has(v)) continue; seen.add(v); out.push(x); if(out.length>=k) break; }
+  return shuffle([c,...out]);
+}
+function renderProva(){
+  const view=document.getElementById('view');
+  if(!qz.q) return setupProva(view);
+  const q=qz.q; if(q.i>=q.items.length) return resultProva(view);
+  const c=q.items[q.i]; let answered=false;
+  const valFn=qz.type==='def'?(x=>x.nome):qz.type==='termo'?(x=>x.defs[0]):(x=>x.quando);
+  const pool=qz.type==='quando'?visible().filter(x=>x.quando):visible();
+  const opts=optionsFor(c,valFn,pool);
+  const count=h('div',{class:'qcount'},h('span',{},`Pergunta ${q.i+1} de ${q.items.length}`),h('span',{},`Acertos: ${q.score}`));
+  const prompt=qz.type==='def'?'Qual conceito corresponde a esta definição?':qz.type==='termo'?'Qual é a definição de…':'Quando acontece / até quando vai…';
+  const main=qz.type==='def'?c.defs[0]:c.nome;
+  const fb=h('div',{});
+  const next=()=>{ q.i++; renderProva(); window.scrollTo({top:0}); };
+  const recap=()=>h('div',{class:'recap'},h('b',{},`#${c.id} · ${c.nome}`),h('div',{},c.defs[0]),c.quando&&h('div',{},h('b',{style:'font:700 .75rem var(--sans);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)'},'Quando: '),c.quando),
+    h('div',{class:'row'},h('button',{type:'button',class:'btn sm',onclick:()=>openDetailModal(c.id)},'Ver tudo'),
+      h('button',{type:'button',class:'btn sm'+(st.status[c.id]==='rev'?' warn':''),onclick:e=>{ setStatus(c.id,st.status[c.id]==='rev'?null:'rev'); e.currentTarget.className='btn sm'+(st.status[c.id]==='rev'?' warn':''); }},icon('flag'),'Para revisar')));
+  const optEls=opts.map((o,k)=>h('button',{type:'button',class:'opt',onclick:()=>{
+    if(answered) return; answered=true; const ok=o.id===c.id; if(ok) q.score++; else { q.miss.push(c.id); setStatus(c.id,'rev'); }
+    optEls.forEach((b,j)=>{ b.disabled=true; if(opts[j].id===c.id) b.classList.add('right'); else if(j===k) b.classList.add('wrong'); });
+    fb.replaceChildren(h('div',{class:'fb '+(ok?'ok':'bad')},ok?'Correto!':'Não foi desta vez.',h('small',{},ok?`#${c.id} · ${c.nome}`:`Era: ${valFn(c)}`)),recap(),
+      h('button',{type:'button',class:'btn primary',onclick:next},q.i>=q.items.length-1?'Ver resultado':'Próxima',icon('right')));
+    count.lastChild.textContent=`Acertos: ${q.score}`; }},h('span',{class:'k'},String.fromCharCode(65+k)),h('span',{class:'tx'},valFn(o))));
+  view.replaceChildren(h('div',{class:'quiz'},h('div',{class:'card qcard'},count,h('div',{class:'qprompt'},prompt),
+    h('div',{class:'qmain'+(main.length>140?' long':'')},main),
+    qz.type!=='def'&&h('span',{class:'tag',style:`--g:${tcolor(c)}`},h('i'),`${TEMAS[c.tema].nome} · ${c.sub}`),
+    h('div',{class:'opts'},optEls),fb,
+    h('div',{class:'row'},h('button',{type:'button',class:'btn ghost sm',onclick:()=>{ qz.q=null; renderProva(); }},'Encerrar prova')))));
+}
+function setupProva(view){
+  const box=h('div',{class:'card setup'},h('h2',{},'Prova de conceitos'),h('p',{class:'muted'},`Treine com os ${visible().length} conceitos do tema selecionado. Erros viram “para revisar” automaticamente.`));
+  const modeEls=h('div',{class:'modes',role:'group','aria-label':'Tipo de prova'},MODES.map(([k,t,d,ic])=>h('button',{type:'button',class:'mode','aria-pressed':String(qz.type===k),onclick:()=>{ qz.type=k; [...modeEls.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(MODES[i][0]===k))); }},h('span',{class:'mi'},icon(ic)),h('span',{},h('b',{},t),d))));
+  const nSel=h('select',{'aria-label':'Número de perguntas',onchange:e=>{ qz.n=+e.target.value; }},[[5,'5 perguntas'],[10,'10 perguntas'],[20,'20 perguntas'],[999,'Todas']].map(([v,t])=>h('option',{value:v,selected:v===qz.n},t)));
+  const only=h('select',{'aria-label':'Conjunto'},[['todos','Todos os conceitos'],['nao','Só os não dominados'],['rev','Só os marcados para revisar']].map(([v,t])=>h('option',{value:v},t)));
+  box.append(modeEls,h('div',{class:'row'},nSel,only),h('div',{class:'row'},h('button',{type:'button',class:'btn primary',onclick:()=>{
+    let pool=visible(); if(qz.type==='quando') pool=pool.filter(c=>c.quando&&!/\d/.test(c.nome)); else pool=pool.filter(c=>!leaks(c));
+    const f=only.value; if(f==='nao') pool=pool.filter(c=>st.status[c.id]!=='dom'); if(f==='rev') pool=pool.filter(c=>st.status[c.id]==='rev');
+    if(pool.length<4){ alert('Poucos conceitos neste conjunto (mínimo 4). Escolha outro tema ou filtro.'); return; }
+    qz.q={i:0,score:0,miss:[],items:shuffle(pool).slice(0,qz.n)}; renderProva(); window.scrollTo({top:0}); }},icon('right'),'Começar')));
+  view.replaceChildren(h('div',{class:'quiz'},box));
+}
+function resultProva(view){
+  const q=qz.q; const pct=Math.round(q.score/q.items.length*100);
+  view.replaceChildren(h('div',{class:'quiz'},h('div',{class:'card result'},h('p',{class:'muted'},'Resultado'),h('div',{class:'score'},`${q.score}/${q.items.length}`),h('p',{},`${pct}% de acertos`),
+    q.miss.length?h('div',{},h('h3',{style:'margin-top:16px'},'Para rever (já marcados como “revisar”)'),h('div',{class:'misslist'},[...new Set(q.miss)].map(id=>{ const x=BYID[id]; return h('button',{type:'button',class:'pinrow',style:`--g:${tcolor(x)}`,onclick:()=>openDetailModal(id)},h('span',{class:'n',style:id>99?'font-size:.7rem':''},String(id)),h('span',{class:'t'},x.nome)); }))):h('p',{class:'fb ok',style:'margin:16px 0'},'Sem erros. Excelente!'),
+    h('div',{class:'row',style:'justify-content:center'},h('button',{type:'button',class:'btn primary',onclick:()=>{ qz.q=null; renderProva(); }},icon('redo'),'Nova prova'),
+      q.miss.length?h('button',{type:'button',class:'btn',onclick:()=>{ deck.filter='rev'; deck.built=false; st.tab='estudar'; renderAll(); }},icon('cards'),'Estudar os erros'):null))));
+}
+
+/* ---------- aba GLOSSÁRIO ---------- */
+const lf={q:'',s:'todos'};
+function renderLista(){
+  const view=document.getElementById('view');
+  const norm=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+  const grid=h('div',{class:'grid'}); const cnt=h('span',{class:'hint'});
+  const draw=()=>{
+    const q=norm(lf.q.trim());
+    const l=visible().filter(c=>(lf.s==='todos'||(lf.s==='dom'?st.status[c.id]==='dom':lf.s==='rev'?st.status[c.id]==='rev':!st.status[c.id]))&&(!q||norm(c.nome).includes(q)||String(c.id)===q||norm(c.sub).includes(q)||norm(c.defs.join(' ')).includes(q)));
+    grid.replaceChildren(...l.map(c=>{ const s=st.status[c.id]; return h('button',{type:'button',class:'lcard',style:`--g:${tcolor(c)}`,onclick:()=>openDetailModal(c.id)},h('span',{class:'n',style:c.id>99?'font-size:.78rem':''},String(c.id)),h('span',{},h('b',{},c.nome),h('small',{},c.sub)),s&&h('span',{class:'st '+s},s==='dom'?'✓':'!')); }));
+    if(!l.length) grid.append(h('p',{class:'muted'},'Nenhum conceito encontrado.'));
+    cnt.textContent=`${l.length} de ${visible().length}`;
+  };
+  view.replaceChildren(h('div',{},h('div',{class:'lista-bar'},h('input',{type:'search',placeholder:'Buscar por termo, tópico ou trecho da definição…','aria-label':'Buscar',value:lf.q,oninput:e=>{ lf.q=e.target.value; draw(); }}),
+    h('select',{'aria-label':'Status',onchange:e=>{ lf.s=e.target.value; draw(); }},[['todos','Todos'],['novo','Sem marcação'],['dom','Dominados'],['rev','Para revisar']].map(([v,t])=>h('option',{value:v,selected:v===lf.s},t))),cnt),grid));
+  draw();
+}
+
+/* ---------- raiz ---------- */
+function renderAll(){ renderHeader(); ({linha:renderLinha,estudar:renderEstudar,prova:renderProva,lista:renderLista})[st.tab](); }
+document.getElementById('themebtn').addEventListener('click',()=>{
+  const dark=document.documentElement.dataset.theme==='dark'||(st.theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);
+  st.theme=dark?'light':'dark'; applyTheme(); save(); renderHeader();
+});
+document.getElementById('aboutbtn').addEventListener('click',aboutModal);
+load(); applyTheme(); renderAll();
+})();
+</script>
+</body>
+</html>
