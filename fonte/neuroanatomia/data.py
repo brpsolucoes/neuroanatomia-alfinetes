@@ -478,3 +478,29 @@ add(id=43, nome="Área de Wernicke", grupo="cortex",
     extra=[("Clínica", "Lesão → afasia de Wernicke (receptiva): fala fluente, porém sem sentido, e compreensão prejudicada.")],
     imgs=[("broca_wernicke", "Slide 123 · Áreas de Broca e Wernicke"), ("linguagem_areas", "Slide 123 · Áreas da linguagem"), ("linguagem_cores", "Slide 123 · Mapa funcional do córtex")],
     pin=P("lobos", 0.625, 0.535, 35), area=["a_lob_wernicke"], fonte="Slides 122–123")
+
+
+# Respostas aceitas no SIMULADO, além do nome oficial de cada alfinete.
+# A correção já ignora acentos, maiúsculas, hífens e espaços, as palavras "nervo", "lobo", "área",
+# "par", "craniano", "do/da/de", converte algarismos romanos e ordinais (III, terceiro, 3º -> 3)
+# e tolera pequenos erros de digitação (desde que a resposta não fique mais perto de outra estrutura).
+RESP = {
+    5: ["tronco cerebral"],
+    7: ["ponte de varolio", "protuberancia anular"],
+    8: ["medula oblonga", "bulbo raquidiano"],
+    9: ["substancia cinza"],
+    11: ["medula espinhal", "medula"],
+    12: ["intumescencia lombossacral", "intumescencia lombossacra"],
+    13: ["cone terminal"],
+    19: ["frenico"],
+    23: ["ciatico"],
+    25: ["peroneiro superficial", "peroneo superficial", "peroneal superficial"],
+    26: ["peroneiro profundo", "peroneo profundo", "peroneal profundo"],
+    29: ["dura mater", "dura"],
+    30: ["pia mater", "pia"],
+    31: ["aracnoide mater", "aracnoide"],
+    32: ["x par craniano", "pneumogastrico"],
+    33: ["ii par craniano"],
+    34: ["i par craniano"],
+    41: ["prefrontal", "area prefrontal"],
+}

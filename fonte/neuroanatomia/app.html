@@ -248,6 +248,28 @@ select,input[type=search]{font:inherit;color:var(--ink);background:var(--surface
 .score{font-family:var(--serif);font-size:3.2rem;line-height:1;margin:10px 0 4px}
 .misslist{margin:16px 0;display:grid;gap:6px;text-align:left}
 
+/* ---------- simulado ---------- */
+.simopts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.simopts label{display:grid;gap:5px;font-size:.82rem;font-weight:700;color:var(--muted)}
+.simin{width:100%;font:600 1.15rem/1.3 var(--sans);padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);min-height:52px}
+.simin:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.simin[disabled]{opacity:.75}
+.timer{font-variant-numeric:tabular-nums;font-weight:800;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);padding:2px 10px;border-radius:99px}
+.timer.low{color:var(--bad);border-color:var(--bad);background:var(--bad-soft)}
+.tbar{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:-6px}
+.tbar i{display:block;height:100%;background:var(--accent);transition:width .2s linear}
+.simsum{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-top:4px}
+.simlist{display:grid;gap:8px;margin:18px 0;text-align:left}
+.simrow{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:6px 12px;align-items:center;border:1px solid var(--line);border-left:4px solid var(--bad);border-radius:12px;padding:10px 12px;background:var(--surface-2)}
+.simrow.ok{border-left-color:var(--ok)}
+.simrow .n{width:30px;height:30px;border-radius:50%;background:var(--g,#888);color:#fff;font-weight:800;font-size:.8rem;display:grid;place-items:center}
+.simtx b{display:block;line-height:1.25}
+.simtx small{display:block;color:var(--muted);font-size:.84rem}
+.simtx small.inc{color:var(--warn);font-weight:700}
+.simst{font-weight:800;font-size:1.05rem;white-space:nowrap}
+.simrow.ok .simst{color:var(--ok)} .simrow:not(.ok) .simst{color:var(--bad)}
+.simrow .row{grid-column:2 / -1;gap:6px}
+
 /* ---------- lista ---------- */
 .lista-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 .lista-bar input{flex:1;min-width:200px}
@@ -421,7 +443,7 @@ class MapView{
     const vw0=this.view.clientWidth; if(!vw0) return;
     const [iw,ih]=this.size;
     if(!this.o.static){
-      const maxH=innerWidth<=1020?Math.min(innerHeight*0.6,540):Math.min(innerHeight*0.74,720);
+      const maxH=innerWidth<=1020?(this.o.compact?Math.min(innerHeight*0.42,380):Math.min(innerHeight*0.6,540)):Math.min(innerHeight*0.74,720);
       const hh=Math.round(clamp(vw0*ih/iw,240,maxH)); if(this.view.style.height!==hh+'px') this.view.style.height=hh+'px';
     }
     const vw=this.view.clientWidth, vh=this.view.clientHeight; if(!vw||!vh) return;
@@ -484,10 +506,10 @@ class MapView{
     for(const el of this.pinEls.values()) el.remove(); this.pinEls.clear();
     for(const p of list){
       const s=BYID[p.id]; const col=gcolor(s);
-      const el=h('button',{type:'button',class:'pin'+(p.ghost?' ghost':''),style:`left:${p.x*100}%;top:${p.y*100}%;--ang:${p.ang||0}deg;--g:${col}`,'data-id':p.id,'data-st':st.status[p.id]||'',
-        'aria-label':p.hide?'Alfinete':`Alfinete ${p.id}: ${s.nome}`,
+      const el=h('button',{type:'button',class:'pin'+(p.ghost?' ghost':''),style:`left:${p.x*100}%;top:${p.y*100}%;--ang:${p.ang||0}deg;--g:${p.color||col}`,'data-id':p.id,'data-st':st.status[p.id]||'',
+        'aria-label':p.label!=null?`Alfinete ${p.label}`:p.hide?'Alfinete':`Alfinete ${p.id}: ${s.nome}`,
         onclick:ev=>{ if(this.moved){ev.preventDefault();return;} this.o.onPin&&this.o.onPin(p.id); }},
-        h('span',{class:'arm'},h('span',{class:'needle'}),h('span',{class:'head',title:p.hide?'':s.nome},p.hide?'?':String(p.id))),
+        h('span',{class:'arm'},h('span',{class:'needle'}),h('span',{class:'head',title:(p.hide||p.label!=null)?'':s.nome},p.label!=null?String(p.label):p.hide?'?':String(p.id))),
         h('span',{class:'tip'}));
       this.stage.append(el); this.pinEls.set(p.id,el);
     }
@@ -765,7 +787,7 @@ function renderEstudar(){
 document.addEventListener('keydown',e=>{ if(st.tab==='estudar'&&studyKey) studyKey(e); });
 
 /* ---------- aba PROVA ---------- */
-const qz={type:'pin',n:10,hideNum:true,q:null};
+const qz={type:'simulado',n:10,hideNum:true,q:null};
 const maskCache={};
 function maskData(key){ return maskCache[key]||(maskCache[key]=new Promise(res=>{ const im=new Image(); im.onload=()=>{ const c=document.createElement('canvas'); c.width=im.naturalWidth; c.height=im.naturalHeight; const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(im,0,0); res({ctx:x,w:c.width,h:c.height}); }; im.onerror=()=>res(null); im.src=IMG[key]; })); }
 async function areaHit(keys,fx,fy){ for(const k of keys){ const m=await maskData(k); if(!m) continue; const a=m.ctx.getImageData(Math.min(m.w-1,Math.floor(fx*m.w)),Math.min(m.h-1,Math.floor(fy*m.h)),1,1).data[3]; if(a>40) return true; } return false; }
@@ -775,6 +797,7 @@ function distractors(s,k){
 }
 function renderProva(){
   const view=document.getElementById('view');
+  if(sim) return renderSim(view);
   if(!qz.q) return setupProva(view);
   const q=qz.q;
   if(q.i>=q.items.length) return resultProva(view);
@@ -796,7 +819,7 @@ function renderProva(){
     const opts=shuffle([s,...distractors(s,3)]);
     if(qz.type==='pin'){
       const p=s.pin; const mv=new MapView(left,p.mapa,{});
-      mv.setPins([{id:s.id,x:p.x,y:p.y,ang:p.ang,hide:qz.hideNum}]); mv.select(s.id); mv.focusPoint(p.x,p.y,p.mapa==='sagital'?1.8:1.3,false); curMap=mv;
+      mv.setPins([{id:s.id,x:p.x,y:p.y,ang:p.ang,hide:qz.hideNum,color:'#d9480f'}]); mv.select(s.id); mv.focusPoint(p.x,p.y,p.mapa==='sagital'?1.8:1.3,false); curMap=mv;
       left.append(h('p',{class:'mapnote'},'Amplie e arraste o mapa se precisar.'));
     } else left.replaceChildren(h('div',{class:'card',style:'padding:18px'},h('p',{class:'hint'},'Função'),h('ul',{class:'fn',style:`--gx:var(--accent)`},s.funcao.map(f=>h('li',{},f)))));
     const title=h('h2',{class:'qtitle'},qz.type==='pin'?(qz.hideNum?'Que estrutura está marcada pelo alfinete?':`Qual é o alfinete ${s.id}?`):'A qual estrutura pertence esta função?');
@@ -828,15 +851,20 @@ function renderProva(){
   side.append(h('div',{class:'row'},h('button',{type:'button',class:'btn ghost sm',onclick:()=>{ qz.q=null; renderProva(); }},'Encerrar prova')));
 }
 function setupProva(view){
-  const modes=[['pin','Qual é o alfinete?','Um alfinete aparece no mapa. Escolha o nome da estrutura (como na prática).','quiz'],
+  const modes=[['simulado','Simulado da prova prática','Aparece um alfinete numerado e você escreve o nome, com tempo, como na prova. A correção aceita sem acento e pequenos erros de digitação.','flag'],
+               ['pin','Qual é o alfinete?','Um alfinete aparece no mapa. Escolha o nome da estrutura entre 4 opções.','quiz'],
                ['onde','Onde fica?','Aparece o nome. Clique no mapa na posição da estrutura.','map'],
                ['funcao','Função → nome','Leia a função e escolha a estrutura correspondente.','cards']];
   const box=h('div',{class:'card setup'},h('h2',{},'Prova de alfinetes'),h('p',{class:'muted'},`Treine com as ${visible().length} estruturas do ${st.roteiro===1?'Roteiro 1':'Roteiro 2'}. Erros viram “para revisar” automaticamente.`));
-  const modeEls=h('div',{class:'modes',role:'group','aria-label':'Tipo de prova'},modes.map(([k,t,d,ic])=>h('button',{type:'button',class:'mode','aria-pressed':String(qz.type===k),onclick:()=>{ qz.type=k; [...modeEls.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(modes[i][0]===k))); }},h('span',{class:'mi'},icon(ic)),h('span',{},h('b',{},t),d))));
+  const modeEls=h('div',{class:'modes',role:'group','aria-label':'Tipo de prova'},modes.map(([k,t,d,ic])=>h('button',{type:'button',class:'mode','aria-pressed':String(qz.type===k),onclick:()=>{ qz.type=k; [...modeEls.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(modes[i][0]===k))); simOpts.hidden=k!=='simulado'; }},h('span',{class:'mi'},icon(ic)),h('span',{},h('b',{},t),d))));
+  const simOpts=h('div',{class:'simopts',hidden:qz.type!=='simulado'},
+    h('label',{},'Tempo por alfinete',h('select',{onchange:e=>{ simCfg.tempo=+e.target.value; }},[[0,'Sem limite'],[30,'30 segundos'],[60,'1 minuto'],[90,'1 min e 30 s']].map(([v,t])=>h('option',{value:v,selected:v===simCfg.tempo},t)))),
+    h('label',{},'Correção',h('select',{onchange:e=>{ simCfg.corr=e.target.value; }},[['fim','No final (como na prova)'],['cada','A cada alfinete']].map(([v,t])=>h('option',{value:v,selected:v===simCfg.corr},t)))));
   const nSel=h('select',{'aria-label':'Número de perguntas',onchange:e=>{ qz.n=+e.target.value; }},[[5,'5 perguntas'],[10,'10 perguntas'],[20,'20 perguntas'],[999,'Todas']].map(([v,t])=>h('option',{value:v,selected:v===qz.n},t)));
   const only=h('select',{'aria-label':'Conjunto',id:'qonly'},[['todos','Todas as estruturas'],['nao','Só as não dominadas'],['rev','Só as marcadas para revisar']].map(([v,t])=>h('option',{value:v},t)));
-  box.append(modeEls,h('div',{class:'row'},nSel,only),h('div',{class:'row'},h('button',{type:'button',class:'btn primary',onclick:()=>{
+  box.append(modeEls,simOpts,h('div',{class:'row'},nSel,only),h('div',{class:'row'},h('button',{type:'button',class:'btn primary',onclick:()=>{
     let pool=visible(); const f=only.value; if(f==='nao') pool=pool.filter(s=>st.status[s.id]!=='dom'); if(f==='rev') pool=pool.filter(s=>st.status[s.id]==='rev');
+    if(qz.type==='simulado'){ if(!pool.length){ alert('Nenhuma estrutura neste conjunto. Escolha outro filtro.'); return; } startSim(pool.map(s=>s.id)); return; }
     if(pool.length<4){ alert('Poucas estruturas neste conjunto (mínimo 4). Escolha outro filtro.'); return; }
     qz.q={i:0,score:0,miss:[],items:shuffle(pool).slice(0,qz.n)}; renderProva(); window.scrollTo({top:0}); }},icon('right'),'Começar')));
   view.replaceChildren(h('div',{class:'quiz'},box));
@@ -848,6 +876,117 @@ function resultProva(view){
     h('div',{class:'row',style:'justify-content:center'},h('button',{type:'button',class:'btn primary',onclick:()=>{ qz.q=null; renderProva(); }},icon('redo'),'Nova prova'),
       q.miss.length?h('button',{type:'button',class:'btn',onclick:()=>{ deck.filter='rev'; deck.built=false; st.tab='estudar'; renderAll(); }},icon('cards'),'Estudar os erros'):null));
   view.replaceChildren(h('div',{class:'quiz'},box));
+}
+
+/* ---------- SIMULADO da prova prática ---------- */
+let sim=null, simTimer=null;
+const PIN_NEUTRO='#d9480f';
+const simCfg={tempo:60,corr:'fim'};
+const ROMANOS={i:'1',ii:'2',iii:'3',iv:'4',x:'10',primeiro:'1',segundo:'2',terceiro:'3',quarto:'4',decimo:'10'};
+const IGNORAR=new Set(['nervo','n','do','da','de','dos','das','o','a','e','par','craniano','cranial','lobo','area']);
+function normAns(t){
+  t=String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/(\d+)\s*[ºª°o](?=\s|$)/g,'$1');
+  return t.replace(/[^a-z0-9]+/g,' ').split(' ').filter(w=>w&&!IGNORAR.has(w)).map(w=>ROMANOS[w]||w).join('');
+}
+const RESPOSTAS=ALL.map(s=>({id:s.id,keys:[...new Set([s.nome,...(s.resp||[])].map(normAns).filter(Boolean))]}));
+function lev(a,b){
+  if(a===b) return 0; const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  let prev=Array.from({length:n+1},(_,j)=>j), cur=new Array(n+1);
+  for(let i=1;i<=m;i++){ cur[0]=i; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); [prev,cur]=[cur,prev]; }
+  return prev[n];
+}
+const tolerancia=len=>len<=3?0:len<=6?1:len<=11?2:3;
+/* certa = igual a um nome aceito, ou com poucos erros de digitação E mais perto desta estrutura do que de qualquer outra */
+function corrigir(id,txt){
+  const k=normAns(txt); if(!k) return {ok:false,branco:true,inc:false};
+  let dT=Infinity,kT='',dO=Infinity;
+  for(const r of RESPOSTAS) for(const key of r.keys){ const d=lev(k,key); if(r.id===id){ if(d<dT){ dT=d; kT=key; } } else if(d<dO) dO=d; }
+  const ok=dT===0||(dT<=tolerancia(kT.length)&&dT<dO);
+  const inc=!ok&&k.length>=4&&RESPOSTAS.find(r=>r.id===id).keys.some(key=>key!==k&&key.includes(k));
+  return {ok,branco:false,inc};
+}
+window.neuroSimulado={corrigir:(id,t)=>corrigir(id,t).ok,normalizar:normAns};
+function startSim(ids){
+  const items=shuffle(ids).slice(0,qz.n).map(id=>{ const s=BYID[id]; const lugares=[s.pin,...(s.alt||[])]; return {id,place:lugares[Math.floor(Math.random()*lugares.length)]}; });
+  sim={items,i:0,ans:[],tempo:simCfg.tempo,corr:simCfg.corr,t0:Date.now(),fim:null,marcados:false};
+  renderProva(); window.scrollTo({top:0});
+}
+function renderSim(view){
+  clearInterval(simTimer);
+  if(sim.i>=sim.items.length) return simResult(view);
+  const it=sim.items[sim.i], s=BYID[it.id], p=it.place, n=sim.i+1, N=sim.items.length;
+  const left=h('div',{}), side=h('div',{class:'qside card'});
+  view.replaceChildren(h('div',{class:'quiz'},h('div',{class:'qwrap'},h('div',{},left),side)));
+  const mv=new MapView(left,p.mapa,{compact:true});
+  mv.setPins([{id:s.id,x:p.x,y:p.y,ang:p.ang,label:n,color:PIN_NEUTRO}]); mv.select(s.id); mv.focusPoint(p.x,p.y,p.mapa==='sagital'?1.8:1.3,false); curMap=mv;
+  left.append(h('p',{class:'mapnote'},'Amplie e arraste o mapa se precisar.'));
+  const timeEl=h('span',{class:'timer','aria-live':'off'}); const barI=h('i'); const bar=h('div',{class:'tbar','aria-hidden':'true'},barI);
+  const inp=h('input',{type:'text',class:'simin',placeholder:'Nome da estrutura','aria-label':`Nome da estrutura do alfinete ${n}`,autocomplete:'off',autocapitalize:'off',autocorrect:'off',spellcheck:'false',enterkeyhint:'next'});
+  const fb=h('div',{}); let feito=false;
+  const avancar=()=>{ sim.i++; renderProva(); window.scrollTo({top:0}); };
+  const responder=(esgotou)=>{
+    if(feito) return; feito=true; clearInterval(simTimer);
+    const r=corrigir(s.id,inp.value);
+    sim.ans.push({id:s.id,place:p,txt:inp.value.trim(),...r,esgotou:!!esgotou,aceita:false});
+    if(sim.corr==='cada'){
+      inp.disabled=true; botoes.hidden=true;
+      mv.setAreas((s.areas||{})[p.mapa]||[],gcolor(s));
+      const prox=h('button',{type:'button',class:'btn primary',onclick:avancar},n>=N?'Ver resultado':'Próximo alfinete',icon('right'));
+      const titulo=r.ok?'Certo!':(r.branco?(esgotou?'Tempo esgotado.':'Em branco.'):r.inc?'Incompleta.':'Errado.');
+      const extra=r.ok&&normAns(inp.value)!==normAns(s.nome)?` (aceito: “${inp.value.trim()}”)`:'';
+      fb.replaceChildren(h('div',{class:'fb '+(r.ok?'ok':r.inc?'near':'bad')},titulo,h('small',{},`Alfinete ${n}: ${s.nome}${extra}`)),prox);
+      prox.focus();
+    } else avancar();
+  };
+  const botoes=h('div',{class:'row'},
+    h('button',{type:'button',class:'btn primary',onclick:()=>responder(false)},'Responder',h('span',{class:'kbd'},'Enter')),
+    h('button',{type:'button',class:'btn ghost',onclick:()=>{ inp.value=''; responder(false); }},'Pular'));
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); responder(false); } });
+  side.append(
+    h('div',{class:'qcount'},h('span',{},`Alfinete ${n} de ${N}`),sim.tempo?timeEl:h('span',{},'Sem limite de tempo')),
+    sim.tempo?bar:null,
+    h('h2',{class:'qtitle'},`Qual é a estrutura do alfinete ${n}?`),
+    inp,botoes,fb,
+    h('p',{class:'hint'},'Acentos, maiúsculas e pequenos erros de digitação não contam. '+(sim.corr==='fim'?'A correção aparece no final, como na prova.':'Você vê a correção a cada alfinete.')),
+    h('div',{class:'row'},h('button',{type:'button',class:'btn ghost sm',onclick:()=>{
+      if(!confirm('Encerrar o simulado agora? Os alfinetes que faltam contam como em branco.')) return;
+      clearInterval(simTimer);
+      for(let j=feito?sim.i+1:sim.i;j<sim.items.length;j++){ const x=sim.items[j]; sim.ans.push({id:x.id,place:x.place,txt:'',ok:false,branco:true,inc:false,esgotou:false,aceita:false}); }
+      sim.i=sim.items.length; renderProva(); window.scrollTo({top:0}); }},'Encerrar simulado')));
+  if(sim.tempo){
+    const t0=Date.now(), T=sim.tempo*1000;
+    const tick=()=>{ const resta=Math.max(0,T-(Date.now()-t0)); const sec=Math.ceil(resta/1000);
+      timeEl.textContent=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`; timeEl.classList.toggle('low',sec<=10); barI.style.width=(resta/T*100)+'%';
+      if(resta<=0) responder(true); };
+    tick(); simTimer=setInterval(tick,200);
+  }
+  if(matchMedia('(pointer:fine)').matches) setTimeout(()=>{ try{ inp.focus({preventScroll:true}); }catch(_){ inp.focus(); } },60);
+}
+function simResult(view){
+  clearInterval(simTimer);
+  if(!sim.fim) sim.fim=Date.now();
+  if(!sim.marcados){ sim.marcados=true; for(const a of sim.ans) if(!a.ok){ a.antes=st.status[a.id]||null; setStatus(a.id,'rev'); a.marcou=true; } }
+  const box=h('div',{class:'card result'});
+  const draw=()=>{
+    const N=sim.ans.length, certos=sim.ans.filter(a=>a.ok||a.aceita).length, pct=N?Math.round(certos/N*100):0;
+    const dur=Math.round((sim.fim-sim.t0)/1000), erros=sim.ans.filter(a=>!(a.ok||a.aceita));
+    box.replaceChildren(h('p',{class:'muted'},'Resultado do simulado'),h('div',{class:'score'},`${certos}/${N}`),h('p',{},`${pct}% de acertos`),
+      h('div',{class:'simsum'},h('span',{},`Tempo total: ${Math.floor(dur/60)} min ${dur%60} s`),h('span',{},sim.tempo?`${sim.tempo} s por alfinete`:'Sem limite de tempo')),
+      erros.length?h('p',{class:'hint',style:'margin-top:10px'},'Os erros foram marcados como “para revisar”. Se a correção automática recusou uma resposta que você considera certa, use “Contar como certa”.'):h('p',{class:'fb ok',style:'margin:16px 0 0'},'Gabaritou! Excelente.'),
+      h('div',{class:'simlist'},sim.ans.map((a,k)=>{ const s=BYID[a.id], ok=a.ok||a.aceita;
+        return h('div',{class:'simrow'+(ok?' ok':'')},
+          h('span',{class:'n',style:`--g:${gcolor(s)}`,'aria-label':`Alfinete ${k+1}`},String(k+1)),
+          h('div',{class:'simtx'},h('b',{},s.nome),h('small',{},a.txt?`Você escreveu: “${a.txt}”`:(a.esgotou?'Tempo esgotado (em branco)':'Em branco')),
+            (!ok&&a.inc)?h('small',{class:'inc'},'Resposta incompleta'):null),
+          h('span',{class:'simst'},ok?(a.aceita?'✓ aceita':'✓ certa'):'✗ errada'),
+          h('div',{class:'row'},h('button',{type:'button',class:'btn sm',onclick:()=>openDetailModal(a.id)},'Ver no app'),
+            !a.ok?h('button',{type:'button',class:'btn sm ghost',onclick:()=>{ a.aceita=!a.aceita; if(a.marcou) setStatus(a.id,a.aceita?a.antes:'rev'); draw(); }},a.aceita?'Desfazer':'Contar como certa'):null)); })),
+      h('div',{class:'row',style:'justify-content:center'},
+        erros.length?h('button',{type:'button',class:'btn primary',onclick:()=>startSim(erros.map(a=>a.id))},icon('redo'),'Refazer só os erros'):null,
+        h('button',{type:'button',class:erros.length?'btn':'btn primary',onclick:()=>{ sim=null; renderProva(); }},icon('flag'),'Novo simulado'),
+        erros.length?h('button',{type:'button',class:'btn',onclick:()=>{ sim=null; deck.filter='rev'; deck.built=false; st.tab='estudar'; renderAll(); }},icon('cards'),'Estudar os erros'):null));
+  };
+  draw(); view.replaceChildren(h('div',{class:'quiz'},box));
 }
 
 /* ---------- aba LISTA ---------- */
@@ -873,6 +1012,7 @@ function renderLista(){
 
 /* ---------- raiz ---------- */
 function renderAll(){
+  clearInterval(simTimer);
   renderHeader();
   curMap&&curMap.destroy(); curMap=null;
   ({mapa:renderMapa,estudar:renderEstudar,prova:renderProva,lista:renderLista})[st.tab]();

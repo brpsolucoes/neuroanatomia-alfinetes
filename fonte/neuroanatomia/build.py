@@ -30,7 +30,7 @@ for s in D.S:
     structs.append({
         'id': s['id'], 'nome': s['nome'], 'grupo': s['grupo'], 'funcao': s['funcao'], 'onde': s['onde'],
         'extra': s.get('extra', []), 'imgs': s['imgs'], 'pin': s['pin'], 'alt': s.get('alt', []),
-        'areas': areas, 'fonte': s['fonte'],
+        'areas': areas, 'fonte': s['fonte'], 'resp': getattr(D, 'RESP', {}).get(s['id'], []),
     })
 
 sizes = {}
