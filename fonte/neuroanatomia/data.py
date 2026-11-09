@@ -215,7 +215,7 @@ add(id=14, nome="Cauda Equina", grupo="medula",
     pin=P("medula", 0.52, 0.875, 70), fonte="Slides 32–34")
 
 add(id=15, nome="Ventrículo Lateral Direito", grupo="ventriculo",
-    funcao=["Cavidade preenchida por líquor (LCR), produzido pelo plexo corióide: é o 1º ventrículo, início da circulação do líquor.",
+    funcao=["Cavidade preenchida por líquor (LCR), produzido pelo plexo corioide: é o 1º ventrículo, início da circulação do líquor.",
             "Comunica-se com o III ventrículo pelo forame interventricular (de Monro).",
             "Amortece e nutre o tecido nervoso."],
     onde=["Dentro do hemisfério cerebral direito (telencéfalo), abaixo do corpo caloso.",
@@ -227,7 +227,7 @@ add(id=15, nome="Ventrículo Lateral Direito", grupo="ventriculo",
     pin=P("coronal", 0.435, 0.47, -45), area=["a_cor_vld"], fonte="Slides 20–22, 119, 133")
 
 add(id=16, nome="Ventrículo Lateral Esquerdo", grupo="ventriculo",
-    funcao=["Cavidade preenchida por líquor (LCR), produzido pelo plexo corióide: é o 2º ventrículo.",
+    funcao=["Cavidade preenchida por líquor (LCR), produzido pelo plexo corioide: é o 2º ventrículo.",
             "Comunica-se com o III ventrículo pelo forame interventricular (de Monro).",
             "Amortece e nutre o tecido nervoso."],
     onde=["Dentro do hemisfério cerebral esquerdo (telencéfalo), abaixo do corpo caloso.",
@@ -361,13 +361,13 @@ add(id=29, nome="Dura-máter", grupo="meninge",
 
 add(id=30, nome="Pia-máter", grupo="meninge",
     funcao=["Meninge mais interna, fina e transparente, aderida à superfície do encéfalo e da medula (acompanha giros e sulcos).",
-            "Sustenta os vasos que nutrem o tecido nervoso e forma, com o epêndima, os plexos corióides."],
+            "Sustenta os vasos que nutrem o tecido nervoso e forma, com o epêndima, os plexos corioides."],
     onde=["Diretamente sobre o tecido nervoso, abaixo do espaço subaracnóideo (que a separa da aracnoide)."],
     imgs=[("meninges_camadas", "Slide 64 · Meninges e espaços"), ("meninges_ingles", "Slide 65 · Pia-máter e aracnoide"),
           ("meninges_espinal", "Slide 68 · Meninges da medula espinal")],
     pin=P("meninges", 0.316, 0.495, 150), fonte="Slides 63–69")
 
-add(id=31, nome="Aracnóide", grupo="meninge",
+add(id=31, nome="Aracnoide", grupo="meninge",
     funcao=["Meninge intermediária, fina e sem vasos, com aspecto de 'teia de aranha'.",
             "Delimita o espaço subaracnóideo, preenchido por líquor, que amortece o sistema nervoso central.",
             "As granulações aracnóideas devolvem o líquor ao sangue dos seios venosos."],

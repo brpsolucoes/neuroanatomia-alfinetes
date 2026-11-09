@@ -463,6 +463,34 @@ class MapView{
     this.stage.classList.toggle('anim',!!anim);
     this.stage.style.setProperty('--s',this.s);
     this.stage.style.transform=`translate(${this.tx}px,${this.ty}px) scale(${this.s})`;
+    if(this._ls!==this.s||this._lfw!==this.fw){ this._ls=this.s; this._lfw=this.fw; this.layoutPins(); }
+  }
+  /* Afasta as cabeças dos alfinetes para não se sobreporem (a ponta fica sempre no lugar). */
+  layoutPins(){
+    const els=[...this.pinEls.values()]; if(els.length<2||!this.fw) return;
+    const head=els[0].querySelector('.head'); const R=(head&&head.offsetWidth||30)/2, D=2*R+3;
+    const L0=matchMedia('(max-width:760px)').matches?27:32;
+    const W=this.fw*this.s, H=this.fh*this.s;
+    const tips=els.map(el=>({x:el._p.x*W,y:el._p.y*H}));
+    const deltas=[0,20,-20,40,-40,60,-60,80,-80,100,-100,120,-120,140,-140,160,-160,180];
+    const placed=[];
+    els.forEach((el,i)=>{
+      const p=el._p, t=tips[i]; let best=null, bestScore=-Infinity;
+      for(const mult of [1,1.5,2]){
+        for(const d of deltas){
+          const a=(p.ang||0)+d, rad=a*Math.PI/180, L=L0*mult;
+          const hx=t.x+L*Math.sin(rad), hy=t.y-L*Math.cos(rad);
+          let folga=Math.min(hx-R,hy-R,W-hx-R,H-hy-R);
+          for(const q of placed) folga=Math.min(folga,Math.hypot(hx-q.x,hy-q.y)-D);
+          for(let j=0;j<tips.length;j++) if(j!==i) folga=Math.min(folga,Math.hypot(hx-tips[j].x,hy-tips[j].y)-(R+5));
+          if(folga>=0){ best={a,L,x:hx,y:hy,ok:true}; break; }
+          const score=folga-Math.abs(d)*0.02-(mult-1)*4;
+          if(score>bestScore){ bestScore=score; best={a,L,x:hx,y:hy,ok:false}; }
+        }
+        if(best&&best.ok) break;
+      }
+      placed.push(best); el.style.setProperty('--ang',best.a+'deg'); el.style.setProperty('--len',best.L+'px');
+    });
   }
   reset(anim){ this.s=1; this.tx=0; this.ty=0; this.apply(anim); }
   zoomAt(px,py,f,anim){ const s2=clamp(this.s*f,1,8); const k=s2/this.s; this.tx=px-(px-this.tx)*k; this.ty=py-(py-this.ty)*k; this.s=s2; this.apply(anim); }
@@ -511,8 +539,9 @@ class MapView{
         onclick:ev=>{ if(this.moved){ev.preventDefault();return;} this.o.onPin&&this.o.onPin(p.id); }},
         h('span',{class:'arm'},h('span',{class:'needle'}),h('span',{class:'head',title:(p.hide||p.label!=null)?'':s.nome},p.label!=null?String(p.label):p.hide?'?':String(p.id))),
         h('span',{class:'tip'}));
-      this.stage.append(el); this.pinEls.set(p.id,el);
+      el._p=p; this.stage.append(el); this.pinEls.set(p.id,el);
     }
+    this.layoutPins();
   }
   select(id){ for(const [k,el] of this.pinEls) el.classList.toggle('sel',k===id); this.root.classList.toggle('has-sel',id!=null&&this.pinEls.has(id)); }
   hot(id,on){ const el=this.pinEls.get(id); el&&el.classList.toggle('hot',on); }
@@ -856,11 +885,13 @@ function setupProva(view){
                ['onde','Onde fica?','Aparece o nome. Clique no mapa na posição da estrutura.','map'],
                ['funcao','Função → nome','Leia a função e escolha a estrutura correspondente.','cards']];
   const box=h('div',{class:'card setup'},h('h2',{},'Prova de alfinetes'),h('p',{class:'muted'},`Treine com as ${visible().length} estruturas do ${st.roteiro===1?'Roteiro 1':'Roteiro 2'}. Erros viram “para revisar” automaticamente.`));
-  const modeEls=h('div',{class:'modes',role:'group','aria-label':'Tipo de prova'},modes.map(([k,t,d,ic])=>h('button',{type:'button',class:'mode','aria-pressed':String(qz.type===k),onclick:()=>{ qz.type=k; [...modeEls.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(modes[i][0]===k))); simOpts.hidden=k!=='simulado'; }},h('span',{class:'mi'},icon(ic)),h('span',{},h('b',{},t),d))));
+  const modeEls=h('div',{class:'modes',role:'group','aria-label':'Tipo de prova'},modes.map(([k,t,d,ic])=>h('button',{type:'button',class:'mode','aria-pressed':String(qz.type===k),onclick:()=>{ qz.type=k; [...modeEls.children].forEach((b,i)=>b.setAttribute('aria-pressed',String(modes[i][0]===k))); simOpts.hidden=k!=='simulado'; rotularQtd(); }},h('span',{class:'mi'},icon(ic)),h('span',{},h('b',{},t),d))));
   const simOpts=h('div',{class:'simopts',hidden:qz.type!=='simulado'},
     h('label',{},'Tempo por alfinete',h('select',{onchange:e=>{ simCfg.tempo=+e.target.value; }},[[0,'Sem limite'],[30,'30 segundos'],[60,'1 minuto'],[90,'1 min e 30 s']].map(([v,t])=>h('option',{value:v,selected:v===simCfg.tempo},t)))),
     h('label',{},'Correção',h('select',{onchange:e=>{ simCfg.corr=e.target.value; }},[['fim','No final (como na prova)'],['cada','A cada alfinete']].map(([v,t])=>h('option',{value:v,selected:v===simCfg.corr},t)))));
-  const nSel=h('select',{'aria-label':'Número de perguntas',onchange:e=>{ qz.n=+e.target.value; }},[[5,'5 perguntas'],[10,'10 perguntas'],[20,'20 perguntas'],[999,'Todas']].map(([v,t])=>h('option',{value:v,selected:v===qz.n},t)));
+  const nSel=h('select',{'aria-label':'Quantidade',onchange:e=>{ qz.n=+e.target.value; }},[5,10,20,999].map(v=>h('option',{value:v,selected:v===qz.n},'')));
+  const rotularQtd=()=>{ const sim_=qz.type==='simulado'; [...nSel.options].forEach(o=>{ o.textContent=+o.value>=999?(sim_?'Todos os alfinetes':'Todas as perguntas'):`${o.value} ${sim_?'alfinetes':'perguntas'}`; }); };
+  rotularQtd();
   const only=h('select',{'aria-label':'Conjunto',id:'qonly'},[['todos','Todas as estruturas'],['nao','Só as não dominadas'],['rev','Só as marcadas para revisar']].map(([v,t])=>h('option',{value:v},t)));
   box.append(modeEls,simOpts,h('div',{class:'row'},nSel,only),h('div',{class:'row'},h('button',{type:'button',class:'btn primary',onclick:()=>{
     let pool=visible(); const f=only.value; if(f==='nao') pool=pool.filter(s=>st.status[s.id]!=='dom'); if(f==='rev') pool=pool.filter(s=>st.status[s.id]==='rev');
