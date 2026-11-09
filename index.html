@@ -75,6 +75,9 @@ svg.i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;st
 .progress .t{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:6px}
 .progress .bar2{height:8px;border-radius:6px;background:var(--line);overflow:hidden}
 .progress .bar2 i{display:block;height:100%;background:var(--ok);border-radius:6px}
+.due{display:none;align-self:flex-start;align-items:center;gap:7px;font-size:.84rem;font-weight:800;padding:5px 12px;border-radius:99px;background:var(--warn-soft);color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent)}
+.due.on{display:inline-flex}
+.due.emdia{background:var(--ok-soft);color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
 .go{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--c);margin-top:4px}
 .go svg{width:1.1em;height:1.1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
 .app:hover .go svg{transform:translateX(4px)}
@@ -109,6 +112,7 @@ svg.i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;st
         <h2>Alfinetes da aula prática</h2>
         <p>Mapas anatômicos com os 43 alfinetes dos roteiros: clique no alfinete e veja nome, função, imagem e onde fica.</p>
         <ul class="facts"><li>43 alfinetes</li><li>12 mapas interativos</li><li>Estudar</li><li>Prova</li><li>Simulado</li></ul>
+        <span class="due" id="d-neuro"></span>
         <div class="progress" id="p-neuro"><div class="t"><span>Seu progresso</span><span id="p-neuro-t"></span></div><div class="bar2"><i id="p-neuro-b" style="width:0"></i></div></div>
         <span class="go">Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
@@ -120,6 +124,7 @@ svg.i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;st
         <h2>Desenvolvimento Humano</h2>
         <p>Nascimento e primeira infância: físico, perceptual, cognitivo e linguagem, com linha do tempo por idade.</p>
         <ul class="facts"><li>185 conceitos</li><li>5 temas</li><li>Linha do tempo</li><li>Glossário</li></ul>
+        <span class="due" id="d-dev"></span>
         <div class="progress" id="p-dev"><div class="t"><span>Seu progresso</span><span id="p-dev-t"></span></div><div class="bar2"><i id="p-dev-b" style="width:0"></i></div></div>
         <span class="go">Abrir <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
       </div>
@@ -144,8 +149,20 @@ svg.i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;st
   // progresso salvo por cada app (mesmo navegador/origem); falha em silêncio se indisponível
   const read=k=>{ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } };
   const show=(id,done,total)=>{ if(!done) return; document.getElementById('p-'+id).classList.add('on'); document.getElementById('p-'+id+'-t').textContent=done+' de '+total+' dominados'; document.getElementById('p-'+id+'-b').style.width=Math.min(100,done/total*100)+'%'; };
+  const hoje=(()=>{ const t=new Date(); return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'); })();
+  const revisao=(id,dados,maxId)=>{
+    if(!dados) return;
+    const srs=dados.srs||{}, status=dados.status||{}; let due=0, agenda=0;
+    const ids=new Set([...Object.keys(srs),...Object.keys(status)]);
+    for(const k of ids){ if(+k>maxId) continue; const r=srs[k]; if(r){ agenda++; if(r.due<=hoje) due++; } else if(status[k]==='rev'){ agenda++; due++; } }
+    if(!agenda) return;
+    const el=document.getElementById('d-'+id); el.classList.add('on');
+    if(due){ el.textContent=due+(due===1?' para revisar hoje':' para revisar hoje'); } else { el.classList.add('emdia'); el.textContent='Revisões em dia ✓'; }
+  };
   const n=read('neuroAlfinetes.v1'); if(n&&n.status){ const total=n.roteiro===1?28:43; show('neuro',Object.entries(n.status).filter(([id,v])=>v==='dom'&&+id<=total).length,total); }
+  revisao('neuro',n,n&&n.roteiro===1?28:43);
   const d=read('desenvolvimentoHumano.v1'); if(d&&d.status){ show('dev',Object.values(d.status).filter(v=>v==='dom').length,185); }
+  revisao('dev',d,9999);
 })();
 </script>
 </body>
